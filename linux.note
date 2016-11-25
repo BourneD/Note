@@ -1,0 +1,43 @@
+1. File System
+    * struct file_operations
+        . read
+        . write
+        . open
+        . llseek
+        . ioctl
+    * struct dentry_operations
+        . d_delete
+        . d_release
+    * struct inode_operations
+    * struct dentry
+        logical file item
+    * struct inode
+        physical file item
+        . union u
+        . struct file_operations *
+        . struct inode_operations *
+        . unsigned long i_ino
+    * struct task_struct
+        . struct fs_struct
+    * struct fs_struct
+        . struct dentry pwd
+        . struct dentry parent
+        . struct dentry root
+            chroot()
+    * super block
+        . second block on disk
+        . contain root location and other info
+        . every logic disk have super block
+    * read index node
+        . super block + i_ino ---> disk block + offset in block
+        . read out disk block
+        . fetch index node info by offset
+    * read data
+        . read index node
+        . index node + offset in file ---> data block
+        . read out data blcok
+    * from path to data
+        . path_init()
+            init path head dentry
+        . path_work()
+            work forward from head dentry

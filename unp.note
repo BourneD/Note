@@ -1,0 +1,46 @@
+1. write()
+    * description
+        . write data from app buffer to tcp send buffer
+        . block if tcp send buffer cannot hold all app buffer data
+        . return does not mean data is sent out from tcp send buffer
+    * option
+        . SO_SNDBUF --- tcp send buffer size
+
+2. Signal
+    * syscall return EINTR, need restart syscall
+        . accept
+        . read
+        . write
+        . select
+        . open
+    * don't restart syscall when EINTR
+        . connect
+            use select to wait for connect finish
+
+3. socket option
+    * SO_BROADCAST
+        . supported by udp
+        . not supported on P2P net
+        . not supported by tcp or sctp
+    * SO_DEBUG
+        . supported by tcp
+    * SO_KEEPALIVE
+        . send keep-alive probe
+        . recv ACK: connection is ok
+          recv RST: peer is reboot
+          no recv: continue send 8 keep-alive probe, one probe per 75 seconds
+    * SO_RCVBUF
+    * SO_SNDBUF
+        . supported by tcp
+    * SO_RCVTIMEO, SO_SNDTIMEO
+    * SO_REUSEADDR, SO_REUSEPORT
+        . between socket and bind
+
+4. connect() timeout
+    * alarm
+        alarm(timeout) # open alarm
+        connect()
+        alarm(0) # tunoff alarm
+    * select
+        select fd timeout
+    * SO_RCVTIMEO, SO_SNDTIMEO

@@ -1,0 +1,26 @@
+1. ARP
+	* # tcpdump arp -i if_name -e
+		arp packages on interface if_name with mac address
+	  # tcpdump arp -i if_name
+		with ip address
+	* # arp -a
+		list all arp cache
+	  # arp -d ip/hostname
+		delete arp cache entry
+
+2. MSS: TCP body max length
+   MTU: IP packet max length
+   MSS = MTU - IP header - TCP header
+
+3. data link layer
+    * frame format
+        . dest mac (6B)
+        . src mac (6B)
+        . type/length (2B)
+        . data
+        . pad (18B) / crc (4B)
+
+4. IP
+    * header
+        . DF: don't fragment
+            if router device found MTU overflow, respond icmp

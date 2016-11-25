@@ -1,0 +1,61 @@
+1. Process Schedule
+    * process state
+        . NEW
+        . NORMAL(RUNNABLE, SLEEPING, STOPPED)
+        . ZOMBIE
+    * process link list
+        . allproc(NEW, NORMAL)
+        . zombproc(ZOMBIE)
+    * thread queue
+        . run queue
+            organized by priority
+        . sleep queue
+            organized by hash
+    * schedule type
+        . bottom half kernel interrupt(0~63)
+            priority higher than top half
+            priority set on device
+            once set, will not change
+        . top half kernel thread(64~127)
+            priority set on kernel subsystem
+            once set, will not change
+        . user realtime(128~159)
+            priority set by syscall(rtprio)
+        . user share(160~223)
+            adjudged by resource(like cpu) usage
+        . user idle(224~255)
+            priority set by syscall(rtprio)
+    * kernel thread sleep will igonre signal, unless set PCATH tag when sleep
+      msleep() can set PCATH when wait for one event
+    * sleep
+        . get sched_lock exclusion, protect thread state from other interrupt
+        . store wait_pipe in thread struct, hash wait_pipe to wait list
+        . set thread priority for restart, set state=SLEEPING
+        . put thread in sleep queue
+        . mi_switch() to other thread, release sched_lock
+    * wakeup
+        . remove thread from sleep queue
+        . if slept for 1 second, recompute user-zone priority
+        . if thread state==SLEEPING, put it in run queue
+          if thread state==STOPPED, put it in run queue until restarted by other
+    * spin lock
+        . test-and set
+        . loop for lock release
+        . lock holding must be short, otherwise waste cpu in loop
+    * sleep lock
+    * hybrid lock: spin lock + sleep lock
+    * deadlock avoid
+        . one thread only get one lock of one lock type
+        . thread get lock in order of lock type increasing
+        . lock type order maintain by witness model
+
+2. Thread Schedule
+
+3. System Call
+    * return procedure
+        . handler interrupt when syscall blocking
+        . handler interrupt after syscall finish
+        . check interrupt return code, whether restart syscall
+        . check priority, whether switch to other thread
+
+4.
